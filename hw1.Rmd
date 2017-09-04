@@ -1,0 +1,165 @@
+---
+title: "STA 601 HW1"
+author: "Lianghui Li"
+date: "9/2/2017"
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+---
+
+
+### 2.1
+
+#### a)
+
+\begin{align*}
+p(father's farm) &= p(father farm,son farm) + p(father farm,son operatives) + ... \\ 
+&= 0.018 + 0.035 + 0.031 + 0.008 + 0.018 \\
+&= 0.11
+\end{align*}
+
+Using the similar approach for the other fater's occupation:
+
+\begin{align*}
+p(father's operatives) &= 0.279\\
+p(father's craftsmen) &= 0.277\\
+p(father's sales) &= 0.099\\
+p(father's professional) &= 0.235\\
+\end{align*}
+
+#### b)  similarly from the last exercise, but this time we sum vertically.
+
+\begin{align*}
+p(son's farm) &= p(father farm,son farm) + p(son farm,father operatives) + ... \\ 
+&= 0.018 + 0.002 + 0.001 + 0.001 + 0.001 \\
+&= 0.023
+\end{align*}
+
+   then:
+\begin{align*}
+p(son's operatives) &= 0.26\\
+p(son's craftsmen) &= 0.24\\
+p(son's sales) &= 0.125\\
+p(son's professional) &= 0.352\\
+\end{align*}
+
+#### c)  
+Given the number we found from part(a)
+
+\begin{align*}
+p(\text{son's farm | father's farm}) &= \frac{p(\text{son's farm and father's farm})}{p(father's farm)} = \frac{0.018}{0.11} \approx 0.164\\
+similarly:\\
+p(\text{son's operative | father's farm}) &\approx 0.318\\
+p(\text{son's craftsman | father's farm}) &\approx 0.282\\
+p(\text{son's sales | father's farm}) &\approx 0.073\\
+p(\text{son's profession | father's farm}) &\approx 0.164\\
+\end{align*}
+
+#### d)  
+Given the number we found from part(b)
+
+\begin{align*}
+p(\text{father's farm | son's farm}) &= \frac{p(\text{son's farm and father's farm})}{p(son's farm)} = \frac{0.018}{0.023} \approx 0.783\\
+similarly:\\
+p(\text{father's operative | son's farm}) &\approx 0.087\\
+p(\text{father's craftsman | son's farm}) &\approx 0.043\\
+p(\text{father's sales | son's farm}) &\approx 0.043\\
+p(\text{father's profession | son's farm}) &\approx 0.043\\
+\end{align*}
+
+### 2.2
+
+#### a)
+
+\begin{align*}
+E[a_1Y_1+a_2Y_2] =a_1E[Y_1]+a_2E[Y_2] &= a_1\mu_1 + a_2\mu_2 \\
+Var[a_1Y_1+a_2Y_2] =a_1^2Var[Y_1]+a_2^2Var[Y_2] +a_1a_2cov(Y_1,Y_2) &= a_1^2\sigma_1 + a_2^2\sigma_2 + a_1a_2cov(Y_1,Y_2)\\
+& = a_1^2\sigma_1 + a_2^2\sigma_2 \hspace{1cm} \text{(becasue of independence)}
+\end{align*}
+
+#### b)
+
+\begin{align*}
+E[a_1Y_1-a_2Y_2] =a_1E[Y_1]-a_2E[Y_2] &= a_1\mu_1 - a_2\mu_2 \\
+Var[a_1Y_1-a_2Y_2] =a_1^2Var[Y_1]+a_2^2Var[Y_2] - a_1a_2cov(Y_1,Y_2)&= a_1^2\sigma_1 + a_2^2\sigma_2 - a_1a_2cov(Y_1,Y_2)\\
+& = a_1^2\sigma_1 + a_2^2\sigma_2 \hspace{1cm} \text{(becasue of independence)}
+\end{align*}
+
+### 2.3
+
+#### a)
+
+\begin{align*}
+\text{Given }p(x,y,z) &\propto f(x,z)g(y,z)h(z) \\
+p(x|y,z) &= \frac{p(x,y,z)}{p(y,z)} \hspace{2cm} \text{(by conditional formula)}\\
+&\propto \frac{f(x,z)g(y,z)h(z)}{\int p(x,y,z)dx}\\
+&= \frac{f(x,z)g(y,z)h(z)}{g(y,z)h(z)\int f(x,z)dx}\\
+&= \frac{f(x,z)}{\int f(x,z)dx}\\
+& \propto f(x,z) 
+\end{align*}
+
+#### b)
+
+\begin{align*}
+p(y|x,z) &= \frac{p(x,y,z)}{p(x,z)} \hspace{2cm} \text{(by conditional formula)}\\
+&\propto \frac{f(x,z)g(y,z)h(z)}{\int p(x,y,z)dx}\\
+&= \frac{f(x,z)g(y,z)h(z)}{g(x,z)h(z)\int f(y,z)dx}\\
+&= \frac{f(y,z)}{\int f(y,z)dx}\\
+& \propto f(y,z) 
+\end{align*}
+
+#### c)
+
+from the result of part a), we can see that $$p(x|y,z) = \frac{f(x,z)}{\int f(x,z)dx}$$, so there is no term related to y in this case, therefore, $$p(x|y,z) = p(x|z)$$
+
+so, X and Y are conditionally independent given Z.
+
+### 2.6
+
+#### a)
+
+we are given:
+\begin{align*}
+ a \perp b |c &\rightarrow p(a \cap b|c) = p(a|c)p(b|c) \\
+p(b|c) &= p(a \cap b |c) + p(a^c \cap b |c) \\
+\rightarrow p(a^c \cap b |c) & = p(b|c) - p(a \cap b |c)\\
+& = p(b|c) - p(b|c)p(a|c)\\
+& = p(b|c)(1-p(a|c))\\
+& = p(b|c)p(a^c|c)\\
+
+\text{Therefore, } a^c \perp b |c
+\end{align*}
+
+#### b)
+
+Similarly,
+\begin{align*}
+p(a|c) &= p(a \cap b |c) + p(b^c \cap a |c) \\
+\rightarrow p(b^c \cap a |c) & = p(a|c) - p(a \cap b |c)\\
+& = p(a|c) - p(b|c)p(a|c)\\
+& = p(a|c)(1-p(b|c))\\
+& = p(a|c)p(b^c|c)\\
+
+\text{Therefore, } a \perp b^c |c
+\end{align*}
+
+#### c)
+
+From the result of part(a)
+
+\begin{align*}
+a^c \perp b |c &\rightarrow p(a^c \cap b|c) = p(a^c|c)p(b|c) \\
+p(a^c|c) &= p(a^c \cap b |c) + p(b^c \cap a^c |c) \\
+\rightarrow p(b^c \cap a^c |c) & = p(a^c|c) - p(a^c \cap b |c)\\
+& = p(a^c|c) - p(b|c)p(a^c|c)\\
+& = p(a^c|c)(1-p(b|c))\\
+& = p(a^c|c)p(b^c|c)\\
+
+\text{Therefore, } a^c \perp b^c |c
+\end{align*}
+
+#### d)
+
+
+
