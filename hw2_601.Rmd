@@ -1,0 +1,181 @@
+---
+title: "Homework2 Sta 601"
+author: "Lianghui Li"
+date: "9/10/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE, message = F}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(knitr)
+library(dplyr)
+library(ggplot2)
+
+```
+
+### 2.1
+
+#### a)
+
+\begin{align*}
+Pr(Y_1 = y_1, ..., Y_100 = y_100 \mid \theta) &= \theta^{\sum Y_i}(1-\theta)^{100 - \sum Y_i}  \\ 
+Pr(\sum Y_i = y \mid \theta) & = \binom{n}{y} \theta^{\sum Y_i}(1-\theta)^{100 - \sum Y_i}\\
+
+\end{align*}
+
+
+
+#### b)  
+```{r}
+y = 57
+n = 100
+theta.1 = seq(0.0, 1.0, by = 0.1)
+py.theta.1 = dbinom(y,n, theta.1)
+table1 = matrix(c(theta.1, py.theta.1), 11, 2)
+colnames(table1) = c('prior', 'y conditional on theta')
+kable(table1)
+
+df1 = as.data.frame(table1)
+
+ggplot(df1, aes(x= theta.1, y= py.theta.1)) + geom_line() + labs(x = "theta", y= "conditional prob of y")
+```
+
+
+#### c)  
+```{r}
+ptheta.1 = rep(1/length(theta.1), length(theta.1))
+joint_y_theta = theta.1 * py.theta.1
+poster2 = joint_y_theta / sum(joint_y_theta)
+table2 = matrix(c(theta.1, poster2), 11, 2)
+colnames(table2) = c('prior', 'posterior')
+kable(table2)
+
+df2 = as.data.frame(table2)
+
+ggplot(df2, aes(x= prior, y= posterior)) + geom_line(aes(col = "p(theta|y)")) +geom_hline(yintercept = 1/length(theta.1), col = "blue") + labs(x = "prior", y= "posterior") + annotate("text", 0.05, 0.13, label = "p(theta)")
+```
+
+#### d)  
+```{r}
+theta.2 = seq(0.01, 0.99, by = 0.01)
+ptheta.2 = dbeta(theta.2, 1,1)
+joint_y_theta2 =  ptheta.2 * py.theta.1
+table3 = matrix(c(theta.1, joint_y_theta2), 11, 2)
+colnames(table3) = c('prior', 'joint')
+kable(table3)
+
+df3 = as.data.frame(table3)
+
+ggplot(df3, aes(x= prior, y= joint)) + geom_line(aes(col = "p(theta, y)")) +  labs(x = "prior", y= "joint") + annotate("text", 0.05, 0.13, label = "p(theta)")
+```
+
+#### e)
+
+```{r}
+atheta.y.2 = 1 + y
+btheta.y.2 = 1 + n - y
+theta.2 = seq(0.01, 0.99, by = 0.01)
+ptheta.2 = dbeta(theta.2, 1,1)
+ptheta.y.2 = dbeta(theta.2, atheta.y.2, btheta.y.2)
+table4 = matrix(c(theta.2, ptheta.y.2), 99, 2)
+colnames(table4) = c('prior', 'posterior')
+kable(table4)
+
+df4 = as.data.frame(table4)
+
+ggplot(df4, aes(x= prior, y= posterior)) + geom_line(aes(col = "p(theta|y)")) +  labs(x = "prior", y= "posterior") + annotate("text", 0.05, 0.13, label = "p(theta)")
+```
+
+### 2.2
+
+#### a)
+
+\begin{align*}
+E[a_1Y_1+a_2Y_2] =a_1E[Y_1]+a_2E[Y_2] &= a_1\mu_1 + a_2\mu_2 \\
+Var[a_1Y_1+a_2Y_2] =a_1^2Var[Y_1]+a_2^2Var[Y_2] +a_1a_2cov(Y_1,Y_2) &= a_1^2\sigma_1 + a_2^2\sigma_2 + a_1a_2cov(Y_1,Y_2)\\
+& = a_1^2\sigma_1 + a_2^2\sigma_2 \hspace{1cm} \text{(becasue of independence)}
+\end{align*}
+
+#### b)
+
+\begin{align*}
+E[a_1Y_1-a_2Y_2] =a_1E[Y_1]-a_2E[Y_2] &= a_1\mu_1 - a_2\mu_2 \\
+Var[a_1Y_1-a_2Y_2] =a_1^2Var[Y_1]+a_2^2Var[Y_2] - a_1a_2cov(Y_1,Y_2)&= a_1^2\sigma_1 + a_2^2\sigma_2 - a_1a_2cov(Y_1,Y_2)\\
+& = a_1^2\sigma_1 + a_2^2\sigma_2 \hspace{1cm} \text{(becasue of independence)}
+\end{align*}
+
+### 2.3
+
+#### a)
+
+\begin{align*}
+\text{Given }p(x,y,z) &\propto f(x,z)g(y,z)h(z) \\
+p(x|y,z) &= \frac{p(x,y,z)}{p(y,z)} \hspace{2cm} \text{(by conditional formula)}\\
+&\propto \frac{f(x,z)g(y,z)h(z)}{\int p(x,y,z)dx}\\
+&= \frac{f(x,z)g(y,z)h(z)}{g(y,z)h(z)\int f(x,z)dx}\\
+&= \frac{f(x,z)}{\int f(x,z)dx}\\
+& \propto f(x,z) 
+\end{align*}
+
+#### b)
+
+\begin{align*}
+p(y|x,z) &= \frac{p(x,y,z)}{p(x,z)} \hspace{2cm} \text{(by conditional formula)}\\
+&\propto \frac{f(x,z)g(y,z)h(z)}{\int p(x,y,z)dx}\\
+&= \frac{f(x,z)g(y,z)h(z)}{g(x,z)h(z)\int f(y,z)dx}\\
+&= \frac{f(y,z)}{\int f(y,z)dx}\\
+& \propto f(y,z) 
+\end{align*}
+
+#### c)
+
+from the result of part a), we can see that $$p(x|y,z) = \frac{f(x,z)}{\int f(x,z)dx}$$, so there is no term related to y in this case, therefore, $$p(x|y,z) = p(x|z)$$
+
+so, X and Y are conditionally independent given Z.
+
+### 2.6
+
+#### a)
+
+we are given:
+\begin{align*}
+ a \perp b |c &\rightarrow p(a \cap b|c) = p(a|c)p(b|c) \\
+p(b|c) &= p(a \cap b |c) + p(a^c \cap b |c) \\
+\rightarrow p(a^c \cap b |c) & = p(b|c) - p(a \cap b |c)\\
+& = p(b|c) - p(b|c)p(a|c)\\
+& = p(b|c)(1-p(a|c))\\
+& = p(b|c)p(a^c|c)\\
+
+\text{Therefore, } a^c \perp b |c
+\end{align*}
+
+#### b)
+
+Similarly,
+\begin{align*}
+p(a|c) &= p(a \cap b |c) + p(b^c \cap a |c) \\
+\rightarrow p(b^c \cap a |c) & = p(a|c) - p(a \cap b |c)\\
+& = p(a|c) - p(b|c)p(a|c)\\
+& = p(a|c)(1-p(b|c))\\
+& = p(a|c)p(b^c|c)\\
+
+\text{Therefore, } a \perp b^c |c
+\end{align*}
+
+#### c)
+
+From the result of part(a)
+
+\begin{align*}
+a^c \perp b |c &\rightarrow p(a^c \cap b|c) = p(a^c|c)p(b|c) \\
+p(a^c|c) &= p(a^c \cap b |c) + p(b^c \cap a^c |c) \\
+\rightarrow p(b^c \cap a^c |c) & = p(a^c|c) - p(a^c \cap b |c)\\
+& = p(a^c|c) - p(b|c)p(a^c|c)\\
+& = p(a^c|c)(1-p(b|c))\\
+& = p(a^c|c)p(b^c|c)\\
+
+\text{Therefore, } a^c \perp b^c |c
+\end{align*}
+
+#### d)
