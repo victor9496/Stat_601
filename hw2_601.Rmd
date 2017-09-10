@@ -14,7 +14,7 @@ library(ggplot2)
 
 ```
 
-### 2.1
+### 3.1
 
 #### a)
 
@@ -80,30 +80,36 @@ ptheta.2 = dbeta(theta.2, 1,1)
 ptheta.y.2 = dbeta(theta.2, atheta.y.2, btheta.y.2)
 table4 = matrix(c(theta.2, ptheta.y.2), 99, 2)
 colnames(table4) = c('prior', 'posterior')
-kable(table4)
 
 df4 = as.data.frame(table4)
 
 ggplot(df4, aes(x= prior, y= posterior)) + geom_line(aes(col = "p(theta|y)")) +  labs(x = "prior", y= "posterior") + annotate("text", 0.05, 0.13, label = "p(theta)")
 ```
 
-### 2.2
+### 3.2
 
-#### a)
+```{r}
+y <- 57 
+n <- 100
+theta.0 <- seq(0.1, 0.9, by = 0.1) 
+n.0 <- 2^seq(0, 5, by = 1)
+post.means <- matrix(NA,
+                     nrow = length(theta.0),
+                     ncol = length(n.0))
+for (i in 1:length(theta.0)) { for (j in 1:length(n.0)) {
+  a.0.ij <- theta.0[i]*n.0[j]
+  b.0.ij <- (1 - theta.0[i])*n.0[j]
+  a.post.ij <- a.0.ij + y
+  b.post.ij <- b.0.ij + n - y
+  post.means[i, j] <- 1 - pbeta(0.5, a.post.ij, b.post.ij) }
+}
 
-\begin{align*}
-E[a_1Y_1+a_2Y_2] =a_1E[Y_1]+a_2E[Y_2] &= a_1\mu_1 + a_2\mu_2 \\
-Var[a_1Y_1+a_2Y_2] =a_1^2Var[Y_1]+a_2^2Var[Y_2] +a_1a_2cov(Y_1,Y_2) &= a_1^2\sigma_1 + a_2^2\sigma_2 + a_1a_2cov(Y_1,Y_2)\\
-& = a_1^2\sigma_1 + a_2^2\sigma_2 \hspace{1cm} \text{(becasue of independence)}
-\end{align*}
+contour(theta.0, n.0, post.means, xlab = expression(theta[0]),
+ylab = expression(n[0]),
+levels = seq(0.3, 1, by = 0.05),
+main = expression(paste("Pr(", theta, "> 0.5 | y = 57)", sep = "")))
+```
 
-#### b)
-
-\begin{align*}
-E[a_1Y_1-a_2Y_2] =a_1E[Y_1]-a_2E[Y_2] &= a_1\mu_1 - a_2\mu_2 \\
-Var[a_1Y_1-a_2Y_2] =a_1^2Var[Y_1]+a_2^2Var[Y_2] - a_1a_2cov(Y_1,Y_2)&= a_1^2\sigma_1 + a_2^2\sigma_2 - a_1a_2cov(Y_1,Y_2)\\
-& = a_1^2\sigma_1 + a_2^2\sigma_2 \hspace{1cm} \text{(becasue of independence)}
-\end{align*}
 
 ### 2.3
 
