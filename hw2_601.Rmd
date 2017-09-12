@@ -2,7 +2,10 @@
 title: "Homework2 Sta 601"
 author: "Lianghui Li"
 date: "9/10/2017"
-output: html_document
+output:
+  pdf_document: 
+    latex_engine: xelatex
+  html_document: default
 ---
 
 ```{r setup, include=FALSE, message = F}
@@ -21,7 +24,6 @@ library(ggplot2)
 \begin{align*}
 Pr(Y_1 = y_1, ..., Y_100 = y_100 \mid \theta) &= \theta^{\sum Y_i}(1-\theta)^{100 - \sum Y_i}  \\ 
 Pr(\sum Y_i = y \mid \theta) & = \binom{n}{y} \theta^{\sum Y_i}(1-\theta)^{100 - \sum Y_i}\\
-
 \end{align*}
 
 
@@ -38,7 +40,9 @@ kable(table1)
 
 df1 = as.data.frame(table1)
 
-ggplot(df1, aes(x= theta.1, y= py.theta.1)) + geom_line() + labs(x = "theta", y= "conditional prob of y")
+ggplot(df1, aes(x= theta.1, y= py.theta.1)) + 
+  geom_line() + 
+  labs(x = "theta", y= "conditional prob of y")
 ```
 
 
@@ -53,7 +57,11 @@ kable(table2)
 
 df2 = as.data.frame(table2)
 
-ggplot(df2, aes(x= prior, y= posterior)) + geom_line(aes(col = "p(theta|y)")) +geom_hline(yintercept = 1/length(theta.1), col = "blue") + labs(x = "prior", y= "posterior") + annotate("text", 0.05, 0.13, label = "p(theta)")
+ggplot(df2, aes(x= prior, y= posterior)) + 
+  geom_line(aes(col = "p(theta|y)")) + 
+  geom_hline(yintercept = 1/length(theta.1), col = "blue") + 
+  labs(x = "prior", y= "posterior") + 
+  annotate("text", 0.05, 0.13, label = "p(theta)")
 ```
 
 #### d)  
@@ -67,7 +75,10 @@ kable(table3)
 
 df3 = as.data.frame(table3)
 
-ggplot(df3, aes(x= prior, y= joint)) + geom_line(aes(col = "p(theta, y)")) +  labs(x = "prior", y= "joint") + annotate("text", 0.05, 0.13, label = "p(theta)")
+ggplot(df3, aes(x= prior, y= joint)) + 
+  geom_line(aes(col = "p(theta, y)")) +
+  labs(x = "prior", y= "joint") + 
+  annotate("text", 0.05, 0.13, label = "p(theta)")
 ```
 
 #### e)
@@ -83,7 +94,9 @@ colnames(table4) = c('prior', 'posterior')
 
 df4 = as.data.frame(table4)
 
-ggplot(df4, aes(x= prior, y= posterior)) + geom_line(aes(col = "p(theta|y)")) +  labs(x = "prior", y= "posterior") + annotate("text", 0.05, 0.13, label = "p(theta)")
+ggplot(df4, aes(x= prior, y= posterior)) + 
+  geom_line(aes(col = "p(theta|y)")) +
+  labs(x = "prior", y= "posterior")
 ```
 
 ### 3.2
@@ -92,11 +105,12 @@ ggplot(df4, aes(x= prior, y= posterior)) + geom_line(aes(col = "p(theta|y)")) + 
 y <- 57 
 n <- 100
 theta.0 <- seq(0.1, 0.9, by = 0.1) 
-n.0 <- 2^seq(0, 5, by = 1)
+n.0 <- c(1,2,8,16,32)
 post.means <- matrix(NA,
                      nrow = length(theta.0),
                      ncol = length(n.0))
-for (i in 1:length(theta.0)) { for (j in 1:length(n.0)) {
+for (i in 1:length(theta.0)) { 
+  for (j in 1:length(n.0)) {
   a.0.ij <- theta.0[i]*n.0[j]
   b.0.ij <- (1 - theta.0[i])*n.0[j]
   a.post.ij <- a.0.ij + y
@@ -104,84 +118,29 @@ for (i in 1:length(theta.0)) { for (j in 1:length(n.0)) {
   post.means[i, j] <- 1 - pbeta(0.5, a.post.ij, b.post.ij) }
 }
 
-contour(theta.0, n.0, post.means, xlab = expression(theta[0]),
-ylab = expression(n[0]),
-levels = seq(0.3, 1, by = 0.05),
-main = expression(paste("Pr(", theta, "> 0.5 | y = 57)", sep = "")))
+contour(theta.0, n.0, post.means, xlab = 'theta.0',
+ylab = 'n.0',
+levels = seq(0.2, 1, by = 0.05),
+main = c("Pr( theta, > 0.5 | y = 57)"))
 ```
 
+As we know, posterior probability is determined by our prior belife on $\theta_0$ as well as the strength towards that belief $n_0$.
 
-### 2.3
+In this case, we want to know that if $p(\theta > 0.5 \mid y = 57)$, and we can see from the graph that posterior mean is not so sensitive to our prior belief $\theta_0$; whereas, if we have strong belief(high $n_0$) on lower $\theta_0$ value, $p(\theta > 0.5 \mid y = 57)$ is likely lower than 0.5. However, people with weak belief likely lie in the range of greater than 80%. 
 
-#### a)
+### Math Problem
 
-\begin{align*}
-\text{Given }p(x,y,z) &\propto f(x,z)g(y,z)h(z) \\
-p(x|y,z) &= \frac{p(x,y,z)}{p(y,z)} \hspace{2cm} \text{(by conditional formula)}\\
-&\propto \frac{f(x,z)g(y,z)h(z)}{\int p(x,y,z)dx}\\
-&= \frac{f(x,z)g(y,z)h(z)}{g(y,z)h(z)\int f(x,z)dx}\\
-&= \frac{f(x,z)}{\int f(x,z)dx}\\
-& \propto f(x,z) 
-\end{align*}
-
-#### b)
+Given $p(H \mid c_1) = 0.6, p(H \mid c_2) = 0.4$, first two are tails. 
+first, we try to calculate $p(c_1 \mid TT)$ and  $p(c_2 \mid TT)$ 
 
 \begin{align*}
-p(y|x,z) &= \frac{p(x,y,z)}{p(x,z)} \hspace{2cm} \text{(by conditional formula)}\\
-&\propto \frac{f(x,z)g(y,z)h(z)}{\int p(x,y,z)dx}\\
-&= \frac{f(x,z)g(y,z)h(z)}{g(x,z)h(z)\int f(y,z)dx}\\
-&= \frac{f(y,z)}{\int f(y,z)dx}\\
-& \propto f(y,z) 
+p(c_1 \mid TT)  = \frac{p(c_1,TT)}{p(TT)}  &=  \frac{p(c_1,TT)}{p(c_1,TT) + p(c_2,TT)} \\
+& = \frac{0.4\times 0.4}{0.4 \times 0.4 + 0.6 \times 0.6} \\
+& \approx 0.3077 \\
 \end{align*}
 
-#### c)
+so $$p(c_2 \mid TT) = 1 - p(c_1 \mid TT) = 0.6923$$
 
-from the result of part a), we can see that $$p(x|y,z) = \frac{f(x,z)}{\int f(x,z)dx}$$, so there is no term related to y in this case, therefore, $$p(x|y,z) = p(x|z)$$
+After all, we can calculate exptectation using formula $\mu = p(c_1 \mid TT) \mu_1 + p(c_2 \mid TT) \mu_2$. In this case, we know the event is geometric distrbution, hence $$\mu_1 = \frac{1}{0.6} \approx 1.67$$ and $$\mu_2 = \frac{1}{0.4} = 2.5$$.
 
-so, X and Y are conditionally independent given Z.
-
-### 2.6
-
-#### a)
-
-we are given:
-\begin{align*}
- a \perp b |c &\rightarrow p(a \cap b|c) = p(a|c)p(b|c) \\
-p(b|c) &= p(a \cap b |c) + p(a^c \cap b |c) \\
-\rightarrow p(a^c \cap b |c) & = p(b|c) - p(a \cap b |c)\\
-& = p(b|c) - p(b|c)p(a|c)\\
-& = p(b|c)(1-p(a|c))\\
-& = p(b|c)p(a^c|c)\\
-
-\text{Therefore, } a^c \perp b |c
-\end{align*}
-
-#### b)
-
-Similarly,
-\begin{align*}
-p(a|c) &= p(a \cap b |c) + p(b^c \cap a |c) \\
-\rightarrow p(b^c \cap a |c) & = p(a|c) - p(a \cap b |c)\\
-& = p(a|c) - p(b|c)p(a|c)\\
-& = p(a|c)(1-p(b|c))\\
-& = p(a|c)p(b^c|c)\\
-
-\text{Therefore, } a \perp b^c |c
-\end{align*}
-
-#### c)
-
-From the result of part(a)
-
-\begin{align*}
-a^c \perp b |c &\rightarrow p(a^c \cap b|c) = p(a^c|c)p(b|c) \\
-p(a^c|c) &= p(a^c \cap b |c) + p(b^c \cap a^c |c) \\
-\rightarrow p(b^c \cap a^c |c) & = p(a^c|c) - p(a^c \cap b |c)\\
-& = p(a^c|c) - p(b|c)p(a^c|c)\\
-& = p(a^c|c)(1-p(b|c))\\
-& = p(a^c|c)p(b^c|c)\\
-
-\text{Therefore, } a^c \perp b^c |c
-\end{align*}
-
-#### d)
+Therefore, $\mu = 0.3077 \times 1.67 + 0.6923 \times 2.5 = 2.245$
