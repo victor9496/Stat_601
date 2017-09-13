@@ -14,6 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(knitr)
 library(dplyr)
 library(ggplot2)
+library(directlabels)
 
 ```
 
@@ -29,6 +30,9 @@ Pr(\sum Y_i = y \mid \theta) & = \binom{n}{y} \theta^{\sum Y_i}(1-\theta)^{100 -
 
 
 #### b)  
+
+Given that $\sum Y_i = 57$ and $\theta \in {0.1 ... 1.0}$, $Pr(\sum Y_i \mid \theta)$ is a binomial distrbution.
+
 ```{r}
 y = 57
 n = 100
@@ -41,20 +45,23 @@ kable(table1)
 df1 = as.data.frame(table1)
 
 ggplot(df1, aes(x= theta.1, y= py.theta.1)) + 
-  geom_line() + 
+  geom_line(aes(col = "p(y|theta)")) + 
   labs(x = "theta", y= "conditional prob of y")
 ```
 
 
 #### c)  
+
+$p(\theta \mid \sum Y_i = 57) = \frac{p(\sum Y_i \mid \theta)p(\theta)}{\sum_{\theta} p(\sum Y_i \mid \theta)}$
+
 ```{r}
 ptheta.1 = rep(1/length(theta.1), length(theta.1))
-joint_y_theta = theta.1 * py.theta.1
+py.theta.3 = dbinom(y,n, theta.1)
+joint_y_theta = ptheta.1 * py.theta.1
 poster2 = joint_y_theta / sum(joint_y_theta)
 table2 = matrix(c(theta.1, poster2), 11, 2)
 colnames(table2) = c('prior', 'posterior')
 kable(table2)
-
 df2 = as.data.frame(table2)
 
 ggplot(df2, aes(x= prior, y= posterior)) + 
@@ -64,21 +71,23 @@ ggplot(df2, aes(x= prior, y= posterior)) +
   annotate("text", 0.05, 0.13, label = "p(theta)")
 ```
 
-#### d)  
-```{r}
-theta.2 = seq(0.01, 0.99, by = 0.01)
-ptheta.2 = dbeta(theta.2, 1,1)
-joint_y_theta2 =  ptheta.2 * py.theta.1
-table3 = matrix(c(theta.1, joint_y_theta2), 11, 2)
-colnames(table3) = c('prior', 'joint')
-kable(table3)
 
-df3 = as.data.frame(table3)
+#### d)  
+
+
+```{r}
+y = 57
+n = 100
+theta.2 = seq(0, 1, by = 0.01)
+py.theta.2 = dbinom(y,n, theta.2)
+df3 <- as.data.frame(theta.2)
+df3 <- cbind(df3, py.theta.2)
+colnames(df3) = c('prior', 'joint')
+
 
 ggplot(df3, aes(x= prior, y= joint)) + 
   geom_line(aes(col = "p(theta, y)")) +
-  labs(x = "prior", y= "joint") + 
-  annotate("text", 0.05, 0.13, label = "p(theta)")
+  labs(x = "prior", y= "joint")
 ```
 
 #### e)
@@ -99,6 +108,11 @@ ggplot(df4, aes(x= prior, y= posterior)) +
   labs(x = "prior", y= "posterior")
 ```
 
+
+Overall speaking, the four graphs share the same shapes but different scales. with part c and e, graphs are the posterior density, but e has smaller variance.
+With continues uniform as prior in part d and e, curves look more smoothier than first two graphs with discrete probability of $\frac{1}{11}$. 
+
+
 ### 3.2
 
 ```{r}
@@ -118,10 +132,17 @@ for (i in 1:length(theta.0)) {
   post.means[i, j] <- 1 - pbeta(0.5, a.post.ij, b.post.ij) }
 }
 
-contour(theta.0, n.0, post.means, xlab = 'theta.0',
-ylab = 'n.0',
-levels = seq(0.2, 1, by = 0.05),
-main = c("Pr( theta, > 0.5 | y = 57)"))
+countour.df <- as.data.frame(rep(n.0, c(rep(9,5))))
+countour.df <- cbind(countour.df, rep(theta.0, 5))
+countour.df <- cbind(countour.df, as.numeric(post.means))
+
+colnames(countour.df) <- c("n.0", "theta.0", "prob")
+
+p <-ggplot(countour.df, aes(x = theta.0, y = n.0, z = prob)) + stat_contour(aes(colour = ..level..), breaks = 0.05*(7:19)) + 
+  xlim(0.1,0.9) + ggtitle("Pr( theta, > 0.5 | y = 57)") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+direct.label(p,"bottom.pieces")
 ```
 
 As we know, posterior probability is determined by our prior belife on $\theta_0$ as well as the strength towards that belief $n_0$.
