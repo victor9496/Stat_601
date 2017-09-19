@@ -77,3 +77,7 @@ ggplot(df2, aes(x = n0, y = mean_b_post )) + geom_line()
 ```
 
 From part a), we know that posterior expectation of $\theta_A$ is 11.85, in order to know what value $n_0$ is necessary for $\theta_B$ to achieve the same value, we can solve the equation $11.85 = \frac{12n_0 + 113}{n_0 +13}$, and $n_0$ should be at least 274.
+
+###c
+
+Given from the problem, we know that Type B mice are related to type A mice, which means they are not indepedent. with the equation $p(\theta_A, \theta_b) = p(\theta_A)p(\theta_B)$, that implies A and B are independent in terms of our prior belief; therefore, it does not make sense to have to equation above.
