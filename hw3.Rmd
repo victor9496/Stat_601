@@ -2,7 +2,9 @@
 title: "Hw3"
 author: "Lianghui Li"
 date: "9/18/2017"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -120,7 +122,7 @@ mean(theta1_mc < theta2_mc)
 
 ```
 
-Therefore, $E(Pr(\theta_1 < \theta_2 \mid the data and prior)) = 0.3734$
+Therefore, $E(Pr(\theta_1 < \theta_2 \mid  \text{data & prior})) = 0.3734$
 
 
 ##4.2
