@@ -81,3 +81,44 @@ From part a), we know that posterior expectation of $\theta_A$ is 11.85, in orde
 ###c
 
 Given from the problem, we know that Type B mice are related to type A mice, which means they are not indepedent. with the equation $p(\theta_A, \theta_b) = p(\theta_A)p(\theta_B)$, that implies A and B are independent in terms of our prior belief; therefore, it does not make sense to have to equation above.
+
+
+##4.1
+
+Since prior for $\theta_2$ is $Beta(1,1)$ and the sampling is $Bino(50,30)$, so the posterior for $\theta_2$ is $Beta(31,21)$.
+
+```{r}
+theta = seq(0,1, by = 0.1)
+
+y1 = 57
+n1 = 100
+y2 = 30
+n2 = 50
+
+p_y_theta <- dbeta(theta, y2 + 1, 1 + n2 - y2)
+ptheta <- rep(1/length(theta), length(theta))
+p_joint <- p_y_theta*ptheta
+p_post <- p_joint/sum(p_joint)
+
+theta2_mc <- sample(x = theta, 
+                           size = 5000, 
+                           replace = TRUE, 
+                           prob = p_post)
+
+
+p_y_theta1 = dbeta(theta, 1 + y1, 1+ n1 -y1)
+
+p_joint1 <- p_y_theta1*ptheta
+p_post1 <- p_joint1/sum(p_joint1)
+
+theta1_mc <- sample(x = theta, 
+                           size = 5000, 
+                           replace = TRUE, 
+                           prob = p_post1)
+
+mean(theta1_mc < theta2_mc)
+
+```
+
+Therefore, $E(Pr(\theta_1 < \theta_2 \mid the data and prior)) = 0.3734$
+
