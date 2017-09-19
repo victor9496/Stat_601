@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(dplyr)
 library(knitr)
+library(ggplot2)
 ```
 
 ## 3.3
@@ -55,3 +56,24 @@ kable(df1)
 
 ```
 
+
+###b
+
+```{r}
+n0 = seq(50)
+a0 = 12 *n0
+b0 = n0 
+
+a_b_post = a0 + sum(y_b)
+b_b_post = b0 + length(y_b)
+
+mean_b_post = a_b_post /b_b_post
+
+df2 = data.frame(n0, mean_b_post)
+
+ggplot(df2, aes(x = n0, y = mean_b_post )) + geom_line()
+
+
+```
+
+From part a), we know that posterior expectation of $\theta_A$ is 11.85, in order to know what value $n_0$ is necessary for $\theta_B$ to achieve the same value, we can solve the equation $11.85 = \frac{12n_0 + 113}{n_0 +13}$, and $n_0$ should be at least 274.
