@@ -208,3 +208,16 @@ ggplot(data = df4, aes(n0, prob1)) + geom_line()
 ```
 
 The downward sloping trend means increasing the $n_0$ will decrease the probability of $\widetilde{y_B} < \widetilde{y_A}$; and this time, the predictive value are more senstive on the prior sample size than the posterior mean. Moreover, if we increase $n_0$ even more, it is possible to have $Pr(\widetilde{y_B} < \widetilde{y_A}) < 0.5$
+
+
+##Math problem
+
+
+In order to satisfy conjugacy, it should satisfy: $$p(\theta) \in P \Rightarrow p(\theta \mid y) \in P$$
+
+With the sampling distrbution is geometric, $Pr(Y = k \mid p) = (1 - p)^{k -1} p$
+our educated guess for its conjugate will be beta, because they share the similar form, then posterior will be beta as well. Assume Beta(a,b) is prior, the posterior will be Beta(a, b+k).
+
+"a" would approximately be prior number of 1.
+"b" would approximately be prior number of 0.
+"a+b" would approximately be prior sample size.
