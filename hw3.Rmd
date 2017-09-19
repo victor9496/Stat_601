@@ -90,39 +90,43 @@ Given from the problem, we know that Type B mice are related to type A mice, whi
 Since prior for $\theta_2$ is $Beta(1,1)$ and the sampling is $Bino(50,30)$, so the posterior for $\theta_2$ is $Beta(31,21)$.
 
 ```{r}
-theta = seq(0,1, by = 0.1)
+theta = seq(0,1, by = 0.000001)
 
+set.seed(1)
 y1 = 57
 n1 = 100
 y2 = 30
 n2 = 50
 
+#theta 2
 p_y_theta <- dbeta(theta, y2 + 1, 1 + n2 - y2)
-ptheta <- rep(1/length(theta), length(theta))
-p_joint <- p_y_theta*ptheta
-p_post <- p_joint/sum(p_joint)
+
+#ptheta <- rep(1/length(theta), length(theta))
+#p_joint <- p_y_theta*ptheta
+#p_post <- p_joint/sum(p_joint)
 
 theta2_mc <- sample(x = theta, 
                            size = 5000, 
                            replace = TRUE, 
-                           prob = p_post)
+                           prob = p_y_theta)
 
 
+#theta 1
 p_y_theta1 = dbeta(theta, 1 + y1, 1+ n1 -y1)
 
-p_joint1 <- p_y_theta1*ptheta
-p_post1 <- p_joint1/sum(p_joint1)
+#p_joint1 <- p_y_theta1*ptheta
+#p_post1 <- p_joint1/sum(p_joint1)
 
 theta1_mc <- sample(x = theta, 
                            size = 5000, 
                            replace = TRUE, 
-                           prob = p_post1)
+                           prob = p_y_theta1)
 
 mean(theta1_mc < theta2_mc)
 
 ```
 
-Therefore, $E(Pr(\theta_1 < \theta_2 \mid  \text{data & prior})) = 0.3734$
+Therefore, $E(Pr(\theta_1 < \theta_2 \mid  \text{data & prior})) = 0.6132$
 
 
 ##4.2
@@ -179,6 +183,7 @@ for(i in seq_along(n0)) {
   prob[i] = mean(theta1 > theta2)
 }
 
+
 df3 = data_frame(n0, prob)
 
 ggplot(df3, aes(x= n0, y = prob)) + geom_line()
@@ -192,6 +197,47 @@ From the graph, we can clearly see the decreasing trend, which implies the more 
 With the prior is gamma(a,b) and sampling distribution is poisson($\theta$), the predictive distribution will be negative binomial(r,p), where $r= a + \sum y_i$ and $p = \frac{1}{b+n+1}$, but unfortunately in r, we need to do that in two steps
 
 ```{r}
+#(a)
+
+y_a = c(12,9,12,14,13,13,15,8,15,6)
+y_b = c(11,11,10,9,9,8,7,10,6,8,8,9,7)
+
+a_a  = 120
+b_a = 10
+
+a_b = 12
+b_b = 1
+ 
+a_a_post = a_a + sum(y_a)
+b_a_post =  b_a + length(y_a)
+
+a_b_post = a_b + sum(y_b)
+b_b_post = b_b + length(y_b)
+
+s = 5000
+set.seed(123)
+
+a_sample = rgamma(s, a_a_post, b_a_post)
+b_sample = rgamma(s, a_b_post, b_b_post)
+
+a_pred = rpois(s, a_sample)
+b_pred = rpois(s, b_sample)
+
+mean(a_pred > b_pred)
+
+######################
+
+#(b)
+n0 = seq(50)
+a0 = 12 *n0
+b0 = n0 
+
+a_b_post = a0 + sum(y_b)
+b_b_post = b0 + length(y_b)
+
+prob = rep(NA, length(n0))
+
+
 prob1 = rep(NA, length(n0))
 
 set.seed(123)
@@ -202,6 +248,7 @@ for(i  in seq_along(n0)) {
   predy_2 = rpois(s, theta_2)
   prob1[i] = mean(predy_2 < predy_1)
 }
+
 
 df4 = data.frame(n0, prob1)
 
