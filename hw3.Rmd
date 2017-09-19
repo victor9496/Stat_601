@@ -1,0 +1,17 @@
+---
+title: "Hw3"
+author: "Lianghui Li"
+date: "9/18/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 3.3
+
+### a
+
+We know under gamma prior $G(a,b)$ and $y_i \mid \theta$ follows poisson, the posterior will be $G(a + y,b + n)$, where $y$ is number of the observed, $n$ is number of events.
+The posterior distribution for A is $\theta_A \mid y_A$ ~ $gamma(120 + \sum^{10} y_{A_i} = 237, 10 + 10 = 20)$
