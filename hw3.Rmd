@@ -145,6 +145,7 @@ a_b_post = a_b + sum(y_b)
 b_b_post = b_b + length(y_b)
 
 s = 5000
+set.seed(123)
 
 a_sample = rgamma(s, a_a_post, b_a_post)
 b_sample = rgamma(s, a_b_post, b_b_post)
@@ -168,6 +169,8 @@ b_b_post = b0 + length(y_b)
 
 prob = rep(NA, length(n0))
 
+set.seed(123)
+
 for(i in seq_along(n0)) {
   theta1 = rgamma(s,a_a_post, b_a_post)
   theta2 = rgamma(s,a_b_post[i], b_b_post[i])
@@ -183,3 +186,25 @@ ggplot(df3, aes(x= n0, y = prob)) + geom_line()
 From the graph, we can clearly see the decreasing trend, which implies the more increase in the prior sample size by increasing $n_0$, the less likely $\theta_B < \theta_A$. One thing to notice, when $n_0 = 50$, the maximum prior sample size, the probability is still around 0.7, so the conclusion on $\theta_B < \theta_A$ is not senstive to the prior distribution on $\theta_B$.
 
 ###c
+
+With the prior is gamma(a,b) and sampling distribution is poisson($\theta$), the predictive distribution will be negative binomial(r,p), where $r= a + \sum y_i$ and $p = \frac{1}{b+n+1}$, but unfortunately in r, we need to do that in two steps
+
+```{r}
+prob1 = rep(NA, length(n0))
+
+set.seed(123)
+for(i  in seq_along(n0)) {
+  theta_1 = rgamma(s, a_a_post, b_a_post )
+  predy_1 = rpois(s, theta_1)
+  theta_2 = rgamma(s, a_b_post[i], b_b_post[i])
+  predy_2 = rpois(s, theta_2)
+  prob1[i] = mean(predy_2 < predy_1)
+}
+
+df4 = data.frame(n0, prob1)
+
+
+ggplot(data = df4, aes(n0, prob1)) + geom_line()
+```
+
+The downward sloping trend means increasing the $n_0$ will decrease the probability of $\widetilde{y_B} < \widetilde{y_A}$; and this time, the predictive value are more senstive on the prior sample size than the posterior mean. Moreover, if we increase $n_0$ even more, it is possible to have $Pr(\widetilde{y_B} < \widetilde{y_A}) < 0.5$
