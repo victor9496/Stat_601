@@ -176,3 +176,18 @@ ggplot(df4, aes(V3, value, fill=variable)) +
 ```
 
 ###d
+
+```{r}
+set.seed(1)
+t0.mc = rep(NA, s)
+t1.mc = rep(NA, s)
+for(t in seq_len(s)) {
+  dB.mc <- rpois(nobach, tb.mc[t])
+  t0.mc[t] <- sum(dB.mc==0)
+  t1.mc[t] <- sum(dB.mc==1)
+}
+
+
+
+```
+
