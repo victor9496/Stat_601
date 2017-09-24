@@ -2,7 +2,9 @@
 title: "hw4"
 author: "Lianghui Li"
 date: "9/23/2017"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r}
@@ -102,7 +104,7 @@ a.post.a = a + sum(bach)
 b.post.a = a + length(bach)
 
 a.post.b = a + sum(nobach)
-b.post.b = a + sum(nobach)
+b.post.b = a + length(nobach)
 
 set.seed(1)
 s = 5000
@@ -142,13 +144,11 @@ ggplot(df2, aes(V3, value, fill=variable)) +
 
 ```{r}
 quantile(b.mc - a.mc, probs=c(0.025, 0.975))
-quantile(yb - ya, probs=c(0.025, 0.975))
+quantile(tb.mc - ta.mc, probs=c(0.025, 0.975))
 
-mean(ta.mc > tb.mc)
-mean(a.mc > b.mc)
 ```
 
-We can see that the confidence interval for $\theta_B - \theta_A$
+We can see that the confidence interval for $\theta_B - \theta_A$ = (0.16, 0.74); which means for the population, there is 95% confidence that men who don't bachlor degree at the age 30's on average have more children than who have the degree. However, for a predictive individual, the one without degree might have two less or 4 more children than he has the degree on 95 out of 100 occasions.
 
 
 ###c
@@ -175,6 +175,9 @@ ggplot(df4, aes(V3, value, fill=variable)) +
 
 ```
 
+
+In this case, the histogram in green is the possion distribution with $\theta = 1.4$, and the red are our empirical distrbution. Since the mode for empirical is close to 0, while the mode for possion is close to 2, the empirical distrbution has higher density in lower end than possion's, thus, possion model is not a good fit.
+
 ###d
 
 ```{r}
@@ -188,8 +191,6 @@ for(t in seq_len(s)) {
 }
 
 df5 = data.frame(t0.mc, t1.mc)
-
-
 ggplot(df5, aes(x= t0.mc, y= t1.mc)) + 
   geom_point() + 
   geom_jitter() +
@@ -198,3 +199,4 @@ ggplot(df5, aes(x= t0.mc, y= t1.mc)) +
   xlab('zero child') + ylab('one child')
 ```
 
+As we can see from the graph, the predictive mean under possion model for both zero child and one child lie outside the clouds, which suggests possion model is not a good fit in this case.
