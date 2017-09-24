@@ -7,12 +7,14 @@ output: html_document
 
 ```{r}
 library(ggplot2)
+library(reshape2)
 ```
 
 
 
 ##4.3
 
+###a
 
 ```{r}
 y.a <- c(12,9,12,14,13,13,15,8,15,6) 
@@ -49,6 +51,7 @@ qplot(a.result, y=..density.., geom="histogram", binwidth = 0.5, breaks = seq(2,
 We can see from the graph that the observed value lies within high density region in the sample of posterior predictive distrbution. so the we expect the poisson model is able to represent the feature of the population of t.
 
 
+###b
 
 ```{r}
 a.post.b =  a.b + sum(y.b) 
@@ -78,3 +81,67 @@ However in this case, the observed value lies in the tail of the posterior predi
 
 
 ##4.8
+
+
+###a
+
+
+```{r}
+bach = scan("menchild30bach.dat")
+nobach = scan("menchild30nobach.dat")
+```
+
+
+
+
+```{r}
+a = 2
+b = 1
+
+a.post.a = a + sum(bach)
+b.post.a = a + length(bach)
+
+a.post.b = a + sum(nobach)
+b.post.b = a + sum(nobach)
+
+set.seed(1)
+s = 5000
+
+ta.mc = rgamma(s, a.post.a, b.post.a)
+tb.mc = rgamma(s, a.post.b, b.post.b)
+
+a.mc = rpois(s, ta.mc)
+b.mc = rpois(s, tb.mc)
+
+
+r = range(c(a.mc, b.mc))
+yseq = r[1] : r[2]
+
+ya = rep(NA, length(seq))
+yb = rep(NA, length(seq))
+
+for(i in seq_along(yseq)) {
+  ya[i] = sum(a.mc == yseq[i])
+  yb[i] = sum(b.mc == yseq[i])
+
+}
+
+ya = ya/sum(ya)
+yb = yb/sum(yb)
+
+df1 = data.frame(cbind(ya,yb, factor(yseq)))
+df2 = melt(df1, id.vars="V3")
+
+ggplot(df2, aes(V3, value, fill=variable)) + 
+  geom_bar(stat="identity", position="dodge")
+```
+
+
+###b
+
+
+```{r}
+quantile(a.mc - b.mc, probs=c(0.025, 0.975))
+quantile(ya - yb, probs=c(0.025, 0.975))
+```
+
