@@ -45,3 +45,36 @@ qplot(a.result, y=..density.., geom="histogram", binwidth = 0.5, breaks = seq(2,
 
 ```
 
+
+We can see from the graph that the observed value lies within high density region in the sample of posterior predictive distrbution. so the we expect the poisson model is able to represent the feature of the population of t.
+
+
+
+```{r}
+a.post.b =  a.b + sum(y.b) 
+b.post.b = b.b + length(y.b)
+
+
+set.seed(1)
+s = 50000
+
+pred.b =  matrix(nrow = s, ncol = length(y.b))
+
+theta.samps <- rgamma(s, a.post.b, b.post.b)
+
+for (i in seq_len(ncol(pred.b))) {
+pred.b[, i] <- rpois(s, theta.samps)
+}
+
+b.result = apply(pred.b, 1, function(x) mean(x)/sd(x))
+
+qplot(b.result, y=..density.., geom="histogram", binwidth = 0.5, breaks = seq(2,8, by = 1)) + geom_vline(xintercept = mean(y.b)/sd(y.b), color = 'red')
+```
+
+
+However in this case, the observed value lies in the tail of the posterior predictive distrbution. This conflict might be casued by the inability of possion model in explaining the distritbuion of t or the small sample size in each simulation(13) causing the sampling variability.
+
+
+
+
+##4.8
