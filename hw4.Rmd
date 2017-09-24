@@ -1,0 +1,47 @@
+---
+title: "hw4"
+author: "Lianghui Li"
+date: "9/23/2017"
+output: html_document
+---
+
+```{r}
+library(ggplot2)
+```
+
+
+
+##4.3
+
+
+```{r}
+y.a <- c(12,9,12,14,13,13,15,8,15,6) 
+y.b <- c(11,11,10,9,9,8,7,10,6,8,8,9,7)
+
+a.a <- 120
+b.a <- 10
+
+a.b <- 12
+b.b <- 1
+
+a.post.a =  a.a + sum(y.a) 
+b.post.a = b.a + length(y.a)
+
+
+set.seed(1)
+s = 50000
+
+pred.a =  matrix(nrow = s, ncol = length(y.a))
+
+theta.samps <- rgamma(s, a.post.a, b.post.a)
+
+for (i in seq_len(ncol(pred.a))) {
+pred.a[, i] <- rpois(s, theta.samps)
+}
+
+a.result = apply(pred.a, 1, function(x) mean(x)/sd(x))
+
+qplot(a.result, y=..density.., geom="histogram", binwidth = 0.5, breaks = seq(2,12, by = 1)) + geom_vline(xintercept = mean(y.a)/sd(y.a), color = 'red')
+
+```
+
