@@ -141,7 +141,38 @@ ggplot(df2, aes(V3, value, fill=variable)) +
 
 
 ```{r}
-quantile(a.mc - b.mc, probs=c(0.025, 0.975))
-quantile(ya - yb, probs=c(0.025, 0.975))
+quantile(b.mc - a.mc, probs=c(0.025, 0.975))
+quantile(yb - ya, probs=c(0.025, 0.975))
+
+mean(ta.mc > tb.mc)
+mean(a.mc > b.mc)
 ```
 
+We can see that the confidence interval for $\theta_B - \theta_A$
+
+
+###c
+
+
+```{r}
+
+set.seed(1)
+y.sample <- as.numeric((table(nobach))/sum(table(nobach)))
+r <- 0:6
+yhat <- rpois(s, 1.4)
+y.true <- rep(NA, length(r))
+for(i in 1:7) { y.true[i] <- sum(yhat == r[i]) }
+y.true <- y.true/sum(y.true)
+
+
+
+df3 = data.frame(cbind(y.sample,y.true, factor(r)))
+df4 = melt(df3, id.vars="V3")
+
+
+ggplot(df4, aes(V3, value, fill=variable)) + 
+  geom_bar(stat="identity", position="dodge")
+
+```
+
+###d
