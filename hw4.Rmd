@@ -187,7 +187,14 @@ for(t in seq_len(s)) {
   t1.mc[t] <- sum(dB.mc==1)
 }
 
+df5 = data.frame(t0.mc, t1.mc)
 
 
+ggplot(df5, aes(x= t0.mc, y= t1.mc)) + 
+  geom_point() + 
+  geom_jitter() +
+  geom_vline(xintercept = sum(nobach==0), col=2, lty=2) +
+  geom_hline(yintercept = sum(nobach==1), col=2, lty=2) +
+  xlab('zero child') + ylab('one child')
 ```
 
